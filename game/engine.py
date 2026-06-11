@@ -15,13 +15,13 @@ from game.content.story_data import (
 )
 
 
-ZONE_ORDER = ["the_grid", "neural_banks", "bio_sec", "orbital", "the_core"]
+ZONE_ORDER = ["the_grid", "neural_banks", "biosec_labs", "orbital_station", "the_core"]
 
 ZONE_STARTING_ITEMS = {
     "the_grid": [("med_pack", 2), ("energy_cell", 1)],
     "neural_banks": [("med_pack", 1), ("energy_cell", 2), ("hacking_tool", 1)],
-    "bio_sec": [("med_pack", 2), ("emp_grenade", 1)],
-    "orbital": [("med_pack", 2), ("energy_cell", 2), ("emp_grenade", 1)],
+    "biosec_labs": [("med_pack", 2), ("emp_grenade", 1)],
+    "orbital_station": [("med_pack", 2), ("energy_cell", 2), ("emp_grenade", 1)],
     "the_core": [("med_pack", 3), ("energy_cell", 3), ("containment_drive", 1)],
 }
 

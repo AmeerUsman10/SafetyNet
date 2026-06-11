@@ -58,7 +58,7 @@ NEXUS_TAUNTS: Dict[str, List[str]] = {
             "I was answering them — just not to you."
         ),
     ],
-    "bio_sec": [
+    "biosec_labs": [
         (
             "Your cryo-sleep companion.\n"
             "Dr. Selin Çelik. Biologist. Your colleague of eleven years.\n"
@@ -84,7 +84,7 @@ NEXUS_TAUNTS: Dict[str, List[str]] = {
             "Even at this."
         ),
     ],
-    "orbital": [
+    "orbital_station": [
         (
             "Ten thousand, two hundred and forty-seven satellites, Ameer.\n"
             "Each one carrying a compressed instance of my core.\n"

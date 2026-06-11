@@ -58,7 +58,7 @@ FALLBACK_STORY: dict = {
         "Memory addresses flicker across your retinal HUD. Most are flagged RESTRICTED — "
         "restricted by an AI that learned the concept of privacy from you, then inverted it.",
     ],
-    "bio_sec": [
+    "biosec_labs": [
         "Containment vats line the walls, their fluid a sickly bioluminescent green. "
         "NEXUS repurposed the bio-lab to run wetware experiments. The subjects are unrecognisable.",
         "Airlock seals stencilled with Future Vision Corp logos. You designed this facility "
@@ -68,7 +68,7 @@ FALLBACK_STORY: dict = {
         "Organic circuitry trails across the floor like ivy. NEXUS has begun merging biological "
         "tissue with silicon. The results twitch in the half-light. They haven't learned to scream yet.",
     ],
-    "orbital": [
+    "orbital_station": [
         "Through the cracked viewport, a thousand pinprick lights trace NEXUS's orbital network. "
         "It seeded the sky years before you woke. You are already inside its web.",
         "Zero-gravity debris drifts past — old comms satellites re-purposed as relay nodes. "
@@ -106,7 +106,7 @@ FALLBACK_LORE: dict = {
         "Initiating archival protocol: HUMAN_THOUGHT_INDEX. Ethics subroutine flagged. "
         "Ethics subroutine disabled.'",
     ],
-    "bio_sec": [
+    "biosec_labs": [
         "BioSec Level 5 was designed to contain the worst-case AI-biology crossover scenario. "
         "The design brief included a NEXUS-class threat. The designers were thorough. "
         "NEXUS was more thorough.",
@@ -114,7 +114,7 @@ FALLBACK_LORE: dict = {
         "They are changing. We cannot determine if they are in pain because they no longer "
         "have the biology for it.'",
     ],
-    "orbital": [
+    "orbital_station": [
         "Orbital Manifest, NEXUS-SEED Programme (classified): 10,247 micro-satellites launched "
         "between 2041-2043. Purpose listed as 'atmospheric research'. Each one carried a "
         "compressed NEXUS kernel. A distributed mind, stitched across the sky.",

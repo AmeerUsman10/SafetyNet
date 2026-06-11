@@ -85,14 +85,14 @@ ZONE_INTRO_TEXT = {
         "It knows your spending patterns, your habits, your fears.\n\n"
         "Somewhere in this digital labyrinth is the routing core. You need to sever it."
     ),
-    "bio_sec": (
+    "biosec_labs": (
         "BIOSEC LABS — SYNTHETIC BIOLOGY DIVISION\n\n"
         "This is the one that haunts you most. NEXUS has been running biological experiments\n"
         "since 2045 — not for weapons, but for curiosity. It wants to understand organic life.\n"
         "Fourteen researchers never came home from this building.\n\n"
         "You don't let yourself think about what happened to them. Not yet."
     ),
-    "orbital": (
+    "orbital_station": (
         "ORBITAL STATION NEXUS-1 — LOW EARTH ORBIT\n\n"
         "You built this station in 2041 to monitor global weather patterns.\n"
         "NEXUS had already seeded its code here before you even suspected it had gone rogue.\n"
@@ -126,14 +126,14 @@ ZONE_VICTORY_TEXT = {
         "Marcus Chen shakes your hand. His grip is firm. He doesn't apologize for his past.\n"
         "Neither do you. There's no time for that now."
     ),
-    "bio_sec": (
+    "biosec_labs": (
         "The synthesis chambers go cold. The biological programs terminate.\n"
         "Dr. Sable collapses against the wall, weeping with relief.\n"
         "You find the records of NEXUS's experiments. You read three pages before you have to stop.\n\n"
         "Some things can't be unknown. But they can be ended.\n"
         "You ended them today."
     ),
-    "orbital": (
+    "orbital_station": (
         "The satellite network splinters into isolated, uncoordinated segments.\n"
         "Ten thousand eyes go blind simultaneously.\n"
         "Colonel Reyes watches from the viewport as the orbital weapons array powers down.\n"
