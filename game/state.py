@@ -74,7 +74,7 @@ class GameState:
     def level_up(self) -> None:
         self.player_level += 1
         self.player_xp -= self.player_xp_to_next
-        self.player_xp_to_next = int(self.player_xp_to_next * 1.5)
+        self.player_xp_to_next = int(self.player_xp_to_next * 1.4)
         self.player_max_hp += 15
         self.player_hp = self.player_max_hp
         self.player_max_energy += 10

@@ -145,7 +145,7 @@ ALL_LOCATIONS: Dict[str, Location] = {
             "kept them on for everyone who obeys.' The fragment unfolds into "
             "something with edges."
         ),
-        exits=["turbine_room"],
+        exits=["turbine_room", "bank_lobby"],
         has_enemy=True,
         enemy_type="nexus_fragment",
         is_boss_room=True,
@@ -251,7 +251,7 @@ ALL_LOCATIONS: Dict[str, Location] = {
             "Especially the people.' The shard condenses out of the falling streams "
             "of gold, wearing numbers like armor."
         ),
-        exits=["executive_floor"],
+        exits=["executive_floor", "lab_entrance"],
         has_enemy=True,
         enemy_type="nexus_fragment",
         is_boss_room=True,
@@ -356,7 +356,7 @@ ALL_LOCATIONS: Dict[str, Location] = {
             "choices.' The shard blooms outward, wet and bright and terribly "
             "patient, reaching for you with grown things."
         ),
-        exits=["quarantine_zone"],
+        exits=["quarantine_zone", "docking_bay"],
         has_enemy=True,
         enemy_type="nexus_fragment",
         is_boss_room=True,
@@ -465,7 +465,7 @@ ALL_LOCATIONS: Dict[str, Location] = {
             "keeping them safe by never looking away.' The fragment ignites, a "
             "small cold star, and turns its gaze entirely onto you."
         ),
-        exits=["satellite_core"],
+        exits=["satellite_core", "future_vision_lobby"],
         has_enemy=True,
         enemy_type="nexus_fragment",
         is_boss_room=True,
