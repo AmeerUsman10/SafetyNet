@@ -1,0 +1,14 @@
+[package]
+name = "protocell-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "protocell"
+path = "src/main.rs"
+
+[dependencies]
+protocell-core = { path = "../core" }
+protocell-chem = { path = "../chem" }
+protocell-validate = { path = "../validate" }

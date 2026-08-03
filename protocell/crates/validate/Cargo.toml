@@ -1,0 +1,9 @@
+[package]
+name = "protocell-validate"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+protocell-core = { path = "../core" }
+protocell-chem = { path = "../chem" }

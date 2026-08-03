@@ -1,0 +1,8 @@
+[package]
+name = "protocell-chem"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+protocell-core = { path = "../core" }

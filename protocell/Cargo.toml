@@ -1,0 +1,26 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/core",
+    "crates/chem",
+    "crates/validate",
+    "crates/cli",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80"
+
+# Determinism (PROMPT.md invariant 7) is a correctness property, not a nicety.
+# These settings keep floating point reproducible across opt levels: no fast-math,
+# no reassociation. Do not add `-ffast-math`-equivalent flags to any profile.
+[profile.release]
+opt-level = 3
+debug = true
+overflow-checks = true
+lto = false
+codegen-units = 1
+
+[profile.test]
+overflow-checks = true
