@@ -10,6 +10,7 @@
 
 use protocell_chem::{
     formula::Formula,
+    glycolysis,
     network::{Network, Tier},
     ssa::Simulation,
 };
@@ -34,10 +35,11 @@ fn main() {
             cmd_arms();
             true
         }
+        "glycolysis" => cmd_glycolysis(),
         "dod" => cmd_dod(),
         other => {
             eprintln!("unknown subcommand `{other}`");
-            eprintln!("usage: protocell [budget|l0|kill|arms|dod]");
+            eprintln!("usage: protocell [budget|l0|kill|arms|glycolysis|dod]");
             std::process::exit(2);
         }
     };
@@ -262,6 +264,59 @@ fn cmd_arms() {
          otherwise identical — see docs/PREREGISTRATION.md."
     );
     assert!(identical, "the two arms diverged; that is a bug in the overlay");
+}
+
+fn cmd_glycolysis() -> bool {
+    rule("P1 first slice — the ATP-consuming half of glycolysis");
+    let thermo = glycolysis::glycolysis_thermo_params();
+
+    println!("ΔG°′ inputs (all Estimated — see docs/STATE.md BLOCK-01):");
+    for p in thermo.iter() {
+        println!("  {:<16} {:>7.1} {}   [{}]", p.name, p.value, p.units, p.method.label());
+    }
+
+    let mut net = Network::new(T_CELL, cell_unit());
+    let (sp, rx) = glycolysis::build(&mut net, &thermo, 100.0, 50.0, 80.0, 10.0, 60.0);
+    let balance_ok = net.validate().is_ok();
+    println!(
+        "\ninvariant 1  all 5 reactions atom/charge balanced (checked, not asserted)  {}",
+        pf(balance_ok)
+    );
+
+    let mut counts = vec![0u64; net.species().len()];
+    counts[sp.glucose.0 as usize] = 500;
+    counts[sp.atp.0 as usize] = 2000;
+    counts[sp.adp.0 as usize] = 500;
+    let mut sim = Simulation::new(net, counts, 0xC0FFEE);
+    let mut mass_ok = true;
+    for _ in 0..20_000 {
+        sim.advance_one();
+        if std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| sim.assert_mass_conservation()))
+            .is_err()
+        {
+            mass_ok = false;
+            break;
+        }
+    }
+    println!("invariant 2  mass conserved over 20000 steps                             {}", pf(mass_ok));
+    println!(
+        "\nfinal counts  glucose={} G6P={} F6P={} FBP={} DHAP={} G3P={} ADP={} H+={}",
+        sim.count(sp.glucose), sim.count(sp.g6p), sim.count(sp.f6p),
+        sim.count(sp.fbp), sim.count(sp.dhap), sim.count(sp.g3p),
+        sim.count(sp.adp), sim.count(sp.h_plus)
+    );
+    println!(
+        "\nreaction indices: hexokinase={} pgi={} pfk={} aldolase={} tpi={}",
+        rx.hexokinase, rx.pgi, rx.pfk, rx.aldolase, rx.tpi
+    );
+    println!(
+        "\nThis is a pathway skeleton, not a Syn3A parameterization: formulas and\n\
+         stoichiometry are checked by invariant 1 itself, not asserted from memory —\n\
+         the stoichiometric H+ in hexokinase and PFK fell out of that check. The\n\
+         thermodynamics are honestly Estimated rather than a fabricated citation.\n\
+         Full Syn3A metabolism, with real provenance, is what the rest of P1 builds."
+    );
+    balance_ok && mass_ok
 }
 
 fn cmd_dod() -> bool {

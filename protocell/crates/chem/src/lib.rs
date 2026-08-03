@@ -12,6 +12,7 @@
 //!   constructor validates, and which cannot represent an unjustified value.
 
 pub mod formula;
+pub mod glycolysis;
 pub mod network;
 pub mod provenance;
 pub mod ssa;

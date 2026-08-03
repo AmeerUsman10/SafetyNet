@@ -1,6 +1,6 @@
 # STATE.md — Single source of truth
 
-**Updated:** 2026-08-03 · **Phase:** P0 · **Status:** **GREEN** · **Next:** P1.S1
+**Updated:** 2026-08-03 · **Phase:** P0 complete, P1 started · **Status:** **GREEN** · **Next:** P1.S2
 
 ---
 
@@ -19,9 +19,9 @@ cargo run -p protocell-cli -- dod    P0 DoD: GREEN
 | Crate | Contents |
 |---|---|
 | `protocell-core` | Philox4x32-10 keyed by `(seed, stream, step, entity)`, verified against the Random123 known-answer vectors. Monotonic `EntityId` with slot recycling. Append-only, index-addressable event log with content digest. |
-| `protocell-chem` | Formula parsing and atom/charge balance at load. Thermodynamics with the standard-state factor and the Haldane relation. Provenance types where an unjustified value is unrepresentable. Well-stirred SSA with individuation as an overlay. |
+| `protocell-chem` | Formula parsing and atom/charge balance at load. Thermodynamics with the standard-state factor and the Haldane relation. Provenance types where an unjustified value is unrepresentable. Well-stirred SSA with individuation as an overlay. **`glycolysis`: the first real P1 slice — 5 reactions, checker-verified balance, independently confirmed against the real Syn3A SBML.** |
 | `protocell-validate` | Dependency-free statistics (log-gamma, incomplete gamma, chi-square, Fisher combination). L0a/b/c plus negative controls. Kill test on ensembles. Replay. The budget arithmetic. |
-| `protocell-cli` | `protocell {budget, l0, kill, arms, dod}` |
+| `protocell-cli` | `protocell {budget, l0, kill, arms, glycolysis, dod}` |
 
 ### P0 Definition of Done — measured, not asserted
 
@@ -55,20 +55,67 @@ Computed at P0 rather than deferred to P3. `docs/BUDGET.md`.
 
 ---
 
-## Next action — P1.S1
+## BLOCK-01 — substantially resolved, 2026-08-03
 
-**First: resolve BLOCK-01.** Establish whether the 4DWCM's parameter tables and initial
-conditions are actually obtainable. Invariant 9 makes L2 unreachable if they are not, and
-everything from P4 onward assumes them. This is a day of literature and correspondence, and
-it gates a year of work.
+Research subagent + direct clone confirmed: **the real Syn3A parameter data exists and is
+obtainable.** `https://github.com/Luthey-Schulten-Lab/Minimal_Cell` is the actual code
+release for Thornburg et al. 2022, cloned and inspected directly in this session (not just
+indexed). It contains:
 
-Then P1 proper — Syn3A metabolism, well-stirred:
+- `syn3A.gb` — the real GenBank file, header-verified as `CP016816.2`, matching this
+  project's stated genome accession exactly.
+- `CME_ODE/model_data/iMB155_NoH2O.xml` — an SBML metabolic model sourced from
+  **Breuer et al. 2019, *eLife* 8:e36842, doi:10.7554/eLife.36842** (the real Syn3A
+  metabolic reconstruction — this is the primary citation P1 should build against).
+- `Nucleotide_Kinetic_Parameters.tsv`, `Central_AA_*.tsv`, `lipid_NoH2O_balanced_model.tsv`,
+  `transport_*.tsv` — real kinetic parameter tables in SBtab format, with reversible rate
+  laws in convenience-kinetics / Haldane form (`kcrg`/`keq`/`kmc` per reaction) — the same
+  structure `thermo::haldane_keq` already implements, for the same physical reason.
 
-1. `params/` — Syn3A metabolic parameters with provenance records. Expect many `Inherited`
-   and `Estimated`; that is legal and labelled.
-2. MM kinetics under the Haldane form of invariant 3 (`thermo::check_haldane`).
-3. Kill test over the metabolic network. Expect irreversible declarations; each needs a
-   `RELAXATIONS.md` entry with a detecting test. A-0001 and A-0002 anticipate the shape.
+**Independent confirmation, not just data availability.** The SBML species declarations are
+a bit-for-bit match to the formulas hand-derived for `chem::glycolysis` before this file was
+found: G6P/F6P `C6H11O9P`⁻², FBP `C6H10O12P2`⁻⁴, ATP `C10H12N5O13P3`⁻⁴, H⁺ `H`⁺¹. The
+glycolysis module's chemistry is independently verified, not merely self-consistent.
+
+**What remains open.** The repo carries **no LICENSE file** at its root (confirmed by
+direct inspection). BLOCK-02 is therefore partly answered in the negative: this specific
+compiled parameter set is not established as reusable, and its exact fitted values were
+deliberately **not** copied into this codebase — see `glycolysis::source_note` and the
+module doc for the reasoning. The correct path is to build from the *primary* source
+(Breuer et al. 2019, or eQuilibrator) independently, or to contact the authors about reuse
+terms, not to copy the downstream compilation.
+
+Network policy in this environment blocked direct verification of the papers' own SI files,
+the NCBI record, and the Zenodo archives (403 on cell.com, ncbi.nlm.nih.gov, zenodo.org) —
+those remain "should be accessible" rather than "confirmed" and should be re-checked from an
+unrestricted environment before being treated as load-bearing.
+
+**Net effect on the phase plan:** L2 is very likely attemptable — real, structured Syn3A
+data exists and a path to it is documented — but the parameter values themselves still need
+to be sourced from the primary literature rather than harvested wholesale from this repo.
+
+---
+
+## Next action — P1.S2
+
+P1.S1 delivered a first real slice: `chem::glycolysis`, the ATP-consuming half of the EMP
+pathway (hexokinase → PGI → PFK → aldolase → TPI), atom/charge balanced under invariant 1
+using real BiGG-convention formulas (now independently confirmed against the real Syn3A
+SBML above), thermodynamically self-consistent under invariant 3, mass-conserving over
+20,000 real SSA steps. ΔG values are honestly `Estimated`, not fabricated as `Measured`.
+`cargo run -p protocell-cli -- glycolysis`.
+
+Remaining for P1's Definition of Done:
+
+1. The rest of central carbon metabolism (payoff phase of glycolysis, TCA remnants —
+   Syn3A's is truncated — and the pentose phosphate pathway), same pattern: real formulas,
+   checker-verified balance, honestly-labelled thermodynamics.
+2. **Source real ΔG′/kinetic values from Breuer et al. 2019 directly** (not from the
+   Minimal_Cell repo's compiled tables — see BLOCK-01 above) to upgrade the glycolysis
+   module's parameters from `Estimated` to `Measured` with a real DOI.
+3. Kill test over the assembled metabolic network. Expect irreversible declarations; each
+   needs a `RELAXATIONS.md` entry with a detecting test. A-0001 and A-0002 anticipate the
+   shape.
 4. Wegscheider check over every cycle in the network.
 
 **Definition of Done:** kill test passes or every irreversible declaration carries a tested
@@ -95,13 +142,15 @@ median protein scaling move at all? Highest information per GPU-hour in the plan
 | **Identity in the kernel, not P3** | ADR-0004. P3 was circular as written |
 | **Ladder judged on 8 fixed seeds, Fisher-combined** | A single-seed test flakes at 1% and the reflex is to re-roll. That is seed-shopping |
 | Reproduce (L2) before extend (L4) | Non-negotiable |
+| Independently derive chemistry, verify against real data after | The `glycolysis` formulas were hand-derived from BiGG convention, *then* checker-verified (invariant 1) and *then* independently confirmed bit-for-bit against the real Syn3A SBML. Confirmed a result rather than assumed one |
+| Don't copy unlicensed data even when it would be faster | `Minimal_Cell`'s compiled parameter tables have no LICENSE. Re-derive from Breuer 2019 directly rather than harvest the compilation |
 
 ## Open questions and blockers
 
 | Id | Question | Blocks | Status |
 |---|---|---|---|
-| **BLOCK-01** | Are the 4DWCM parameter tables and initial conditions actually public and obtainable? | L2, therefore P4+ | **Unresolved. Do this first.** |
-| **BLOCK-02** | Licensing. LAMMPS is GPL; LM 2.5 and pyLM/jLM have their own terms; a COMBINE release implies redistribution | Any hard dependency on LM/LAMMPS | Unresolved |
+| **BLOCK-01** | Are the 4DWCM parameter tables and initial conditions actually public and obtainable? | L2, therefore P4+ | **Substantially resolved 2026-08-03.** Real data confirmed via direct clone: `Luthey-Schulten-Lab/Minimal_Cell` (genome, SBML metabolic model, kinetic parameter tables), sourced from Breuer et al. 2019. Paper SI/Zenodo/NCBI still unverified (network policy blocked direct fetch); re-check from an unrestricted environment. |
+| **BLOCK-02** | Licensing. LAMMPS is GPL; LM 2.5 and pyLM/jLM have their own terms; a COMBINE release implies redistribution | Any hard dependency on LM/LAMMPS | **Partly resolved, negatively.** `Luthey-Schulten-Lab/Minimal_Cell` has no LICENSE file at root (confirmed by direct inspection) — its compiled tables are not established as reusable. Do not copy its parameter values wholesale; rebuild from the primary source (Breuer 2019) or request reuse terms. LAMMPS/LM licensing itself still unresolved. |
 | **BLOCK-03** | What compute budget actually exists? ~5,750 GPU-hours are needed for L2+L4+L5+L7 | Entry to P4 | Unresolved. The phase plan past P3 is provisional until it is |
 | Q-01 | Reuse LM directly, or reimplement RDME? | P2 | Resolve by inspection at P2, not by guessing now |
 | Q-02 | Can network-free rule matching run against a 10 nm lattice at 10⁵ entities on a GPU? | P2, P4 | Unknown. This is the real research risk |
